@@ -21,13 +21,11 @@ jobs:
 
       - name: Add VM host to known_hosts
         run: |
-          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: SSH into VM and deploy
+      - name: Debug: print SSH key fingerprint
+        run: ssh-keygen -lf ~/.ssh/id_rsa
+
+      - name: Try SSH connection only
         run: |
-          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
-            cd ~/inneparkert-deployment
-            docker-compose --env-file .env pull
-            docker-compose --env-file .env up -d
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} echo "✅ SSH CONNECTED"
