@@ -1,6 +1,12 @@
 name: Deploy to VM
 
 on:
+  workflow_run:
+    workflows:
+      - "Build and Push Frontend to GHCR"
+      - "Build and Push Backend to GHCR"
+      - "Build and Push Detection API to GHCR"
+    types: [ completed ]
   workflow_dispatch:
   push:
     branches: [ main ]
