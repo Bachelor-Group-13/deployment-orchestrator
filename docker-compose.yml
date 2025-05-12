@@ -37,7 +37,7 @@ services:
       - backend
     ports:
       - "8081:3000"
-    command: pnpm build && pnpm start
+    restart: unless-stopped
 
 volumes:
   pgdata:
