@@ -1,8 +1,8 @@
-# 🚀 CI/CD og Deploy-oppsett
+# CI/CD og Deploy-oppsett
 
 Dette repoet koordinerer deploy av tre tjenester i vårt system: `backend`, `frontend`, og `detection-api`. Alle tjenester containeriseres og kjøres sammen med Docker Compose på en virtuell maskin (VM).
 
-## 📦 Docker Container Registry
+## Docker Container Registry
 
 Vi bruker [GitHub Container Registry (GHCR)](https://ghcr.io) for å bygge og distribuere Docker-images. Hvert tjenesterepo har en GitHub Actions workflow som:
 
@@ -10,7 +10,7 @@ Vi bruker [GitHub Container Registry (GHCR)](https://ghcr.io) for å bygge og di
 2. Tagger og pusher imaget til `ghcr.io/bachelor-group-13/<reponavn>:latest`.
 3. Trigger et deploy-workflow i dette repoet.
 
-## ⚙️ Deploy-mekanisme
+## Deploy-mekanisme
 
 Ved hvert push til `main`-grenen i `backend`, `frontend` eller `detection-api` skjer følgende:
 
@@ -25,7 +25,7 @@ docker-compose --env-file .env up -d
 
 Dette sikrer at alle tjenester alltid kjører den nyeste versjonen etter hvert push.
 
-## 📁 Struktur på VM
+## Struktur på VM
 
 På VM-en forventes følgende struktur:
 
@@ -37,7 +37,7 @@ På VM-en forventes følgende struktur:
 
 > `.env` inneholder alle secrets og miljøvariabler og er ikke versjonskontrollert.
 
-## 🔐 Sikkerhet
+## Sikkerhet
 
 - Runtime-secrets (som JWT-nøkler, DB-passord etc.) lagres **kun i `.env` på VM**.
 - Ingen secrets injiseres i workflows eller GitHub-logg.
