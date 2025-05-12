@@ -27,6 +27,6 @@ jobs:
         run: |
           ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
             cd ~/inneparkert-deployment
-            docker-compose --env-file .env pull
-            docker-compose --env-file .env up -d
+            docker compose --env-file .env pull
+            docker compose --env-file .env up -d
           EOF
