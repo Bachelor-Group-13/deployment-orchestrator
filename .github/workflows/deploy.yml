@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout deployment-orchestrator repo
+      - name: Checkout inneparkert-deployment repo
         uses: actions/checkout@v3
 
       - name: Add VM host to known_hosts
