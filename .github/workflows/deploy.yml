@@ -23,7 +23,7 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Debug: print SSH key fingerprint
+      - name: "Debug: print SSH key fingerprint"
         run: ssh-keygen -lf ~/.ssh/id_rsa
 
       - name: Try SSH connection only
