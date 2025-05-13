@@ -1,13 +1,20 @@
 name: Deploy to VM
 
 on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Which service to deploy (frontend, backend, detection-api, or all)'
+        required: true
+        default: 'all'
+
   workflow_run:
     workflows:
       - "Build and Push Frontend to GHCR"
       - "Build and Push Backend to GHCR"
       - "Build and Push Detection API to GHCR"
     types: [ completed ]
-  workflow_dispatch:
+ 
   push:
     branches: [ main ]
 
@@ -31,8 +38,19 @@ jobs:
 
       - name: SSH into VM and deploy
         run: |
-          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
             cd ~/inneparkert-deployment
-            docker compose --env-file .env pull
-            docker compose --env-file .env up -d
+
+            # read the service name from the dispatch input
+            SERVICE="${{ github.event.inputs.service }}"
+
+            if [ "$SERVICE" = "all" ]; then
+              echo "Deploying all services"
+              docker compose --env-file .env pull
+              docker compose --env-file .env up -d --remove-orphans
+            else
+              echo "Deploying only service: $SERVICE"
+              docker compose --env-file .env pull "$SERVICE"
+              docker compose --env-file .env up -d --no-deps "$SERVICE"
+            fi
           EOF
