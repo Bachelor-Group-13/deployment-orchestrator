@@ -36,27 +36,23 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: SSH into VM and deploy
+      - name: SSH into VM, deploy & clean up
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
             cd ~/inneparkert-deployment
 
-            # read the service name from the dispatch input
             SERVICE="${{ github.event.inputs.service }}"
+            SERVICE=${SERVICE:-all}
 
             if [ "$SERVICE" = "all" ]; then
-              echo "Deploying all services"
               docker compose --env-file .env pull
               docker compose --env-file .env up -d --remove-orphans
             else
-              echo "Deploying only service: $SERVICE"
               docker compose --env-file .env pull "$SERVICE"
               docker compose --env-file .env up -d --no-deps "$SERVICE"
             fi
-          EOF
-      - name: Clean up old Docker images
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+
             docker image prune -a -f
             docker volume prune -f
           EOF
+  
