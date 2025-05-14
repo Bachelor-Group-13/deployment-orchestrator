@@ -54,3 +54,9 @@ jobs:
               docker compose --env-file .env up -d --no-deps "$SERVICE"
             fi
           EOF
+      - name: Clean up old Docker images
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} << 'EOF'
+            docker image prune -a -f
+            docker volume prune -f
+          EOF
